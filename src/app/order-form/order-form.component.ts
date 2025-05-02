@@ -11,8 +11,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
   styleUrls: ['./order-form.component.css']
 })
 export class OrderFormComponent {
-  products: string[] = ['Pencil', 'Eraser', 'Pens'];
-  maxRows = 3;
+  products: string[] = ['Pencil', 'Eraser', 'Pens',  'Ruler','Marker','Notebook', 'Sharpener', 'Highlighter'];
+  maxRows = 8;
 
   orderRows: { product: string; quantity: number | null }[] = [
     { product: '', quantity: null }
