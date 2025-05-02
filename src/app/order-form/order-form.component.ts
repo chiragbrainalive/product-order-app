@@ -71,7 +71,7 @@ export class OrderFormComponent {
     speechSynthesis.speak(message);
   }
 
-
+  // Tried to use Text-to-Speech API but it was not working.
   // speakOrder(): void {
   //   if (this.finalOrder.length === 0) {
   //     alert('No items to read.');
