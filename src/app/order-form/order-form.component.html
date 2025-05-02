@@ -5,9 +5,12 @@
     <div *ngFor="let row of orderRows; let i = index" class="flex items-center gap-4 mb-3">
       <!-- Product Dropdown -->
       <select [(ngModel)]="row.product" class="border p-2 rounded w-40">
-        <option value="" disabled selected>Choose Product</option>
-        <option *ngFor="let p of products" [value]="p">{{ p }}</option>
+        <option value="" disabled>Choose Product</option>
+        <option *ngFor="let p of getAvailableProducts(row)" [value]="p">
+          {{ p }}
+        </option>
       </select>
+
   
       <!-- Quantity Dropdown -->
       <select [(ngModel)]="row.quantity" class="border p-2 rounded w-32">
@@ -32,10 +35,11 @@
   </div>
 
 <!-- Final Order Grid -->
-<div *ngIf="showOrderList" class="mt-6 border-t pt-4">
+<div *ngIf="showOrderList" class="mt-6 border-t pt-4 flex justify-center">
+  <div class="w-full max-w-2xl text-center">
     <h3 class="text-xl font-semibold mb-3">Your Order</h3>
-    
-    <table class="table-auto w-full text-left border">
+
+    <table class="table-auto w-full text-left border mx-auto">
       <thead>
         <tr class="bg-gray-100">
           <th class="p-2 border">Product Name</th>
@@ -49,15 +53,19 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Speak Order Button -->
+    <div class="mt-4">
+      <button 
+        (click)="speakOrder()" 
+        class="bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700"
+      >
+        What is my Order?
+      </button>
+    </div>
   </div>
-  <!-- Speak Order Button -->
-<div *ngIf="showOrderList" class="mt-4">
-  <button 
-    (click)="speakOrder()" 
-    class="bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700"
-  >
-    What is my Order?
-  </button>
 </div>
+
+
 
   

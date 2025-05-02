@@ -12,7 +12,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 })
 export class OrderFormComponent {
   products: string[] = ['Pencil', 'Eraser', 'Pens'];
-  maxRows = 8;
+  maxRows = 3;
 
   orderRows: { product: string; quantity: number | null }[] = [
     { product: '', quantity: null }
@@ -23,6 +23,7 @@ export class OrderFormComponent {
 
   constructor(private http: HttpClient) {}
 
+  // Add new row if valid and max not reached
   addRow(index: number): void {
     const current = this.orderRows[index];
     if (
@@ -35,12 +36,41 @@ export class OrderFormComponent {
     }
   }
 
+  // Get available products by excluding selected ones in other rows
+  getAvailableProducts(currentRow: { product: string }): string[] {
+    const selectedProducts = this.orderRows
+      .filter(row => row !== currentRow)
+      .map(row => row.product)
+      .filter(Boolean);
+    return this.products.filter(p => !selectedProducts.includes(p) || p === currentRow.product);
+  }
+
+  // Show current selected order
   showOrder(): void {
     this.finalOrder = this.orderRows
       .filter(row => row.product && row.quantity !== null)
       .map(row => ({ product: row.product, quantity: row.quantity! }));
     this.showOrderList = true;
   }
+
+  // Speak the order using browser's SpeechSynthesis
+  speakOrder(): void {
+    if (this.finalOrder.length === 0) {
+      alert('No items to read.');
+      return;
+    }
+
+    const orderText = this.finalOrder
+      .map(item => `${item.quantity} ${item.product}${item.quantity > 1 ? 's' : ''}`)
+      .join(', ');
+
+    const message = new SpeechSynthesisUtterance(`Your order is: ${orderText}`);
+    message.lang = 'en-US';
+    message.rate = 1;
+    message.volume = 1;
+    speechSynthesis.speak(message);
+  }
+
 
   // speakOrder(): void {
   //   if (this.finalOrder.length === 0) {
@@ -49,7 +79,7 @@ export class OrderFormComponent {
   //   }
   
   //   const orderText = this.finalOrder
-  //     .map(item => `${item.quantity} ${item.product}${item.quantity > 1 ? 's' : ''}`)
+  //     .map(item => ${item.quantity} ${item.product}${item.quantity > 1 ? 's' : ''})
   //     .join(', ');
   
   //   const url = 'https://voicerss-text-to-speech.p.rapidapi.com/';
@@ -60,7 +90,7 @@ export class OrderFormComponent {
   //   });
   
   //   const body = new HttpParams()
-  //     .set('src', `Your order is: ${orderText}`)
+  //     .set('src', Your order is: ${orderText})
   //     .set('hl', 'en-us')
   //     .set('v', 'Linda')
   //     .set('r', '0')
@@ -84,22 +114,4 @@ export class OrderFormComponent {
   //     }
   //   });
   // }
-  speakOrder(): void {
-    if (this.finalOrder.length === 0) {
-      alert('No items to read.');
-      return;
-    }
-  
-    const orderText = this.finalOrder
-      .map(item => `${item.quantity} ${item.product}${item.quantity > 1 ? 's' : ''}`)
-      .join(', ');
-  
-    const message = new SpeechSynthesisUtterance(`Your order is: ${orderText}`);
-    message.lang = 'en-US';
-    message.rate = 1; // normal speed
-    message.volume = 1; // full volume
-    speechSynthesis.speak(message);
-  }
-  
-  
 }
